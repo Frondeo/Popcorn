@@ -75,7 +75,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.hInstance      = hInstance;
     wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_POPCORN));
     wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
-    wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
+    wcex.hbrBackground  = CreateSolidBrush(RGB(0, 0, 0));
     wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_POPCORN);
     wcex.lpszClassName  = szWindowClass;
     wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
@@ -96,20 +96,34 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    hInst = hInstance; // Store instance handle in our global variable
+ 
+ //****************************************************************
+   RECT window_rect;
+   window_rect.left = 0;
+   window_rect.top = 0;
+   window_rect.right = 320 * 3;
+   window_rect.bottom = 200 * 3; 
 
+   AdjustWindowRect(&window_rect, WS_OVERLAPPEDWINDOW, TRUE);
+   
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-      CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
+      0, 0, window_rect.right - window_rect.left, window_rect.bottom - window_rect.top, nullptr, nullptr, hInstance, nullptr);
+ //****************************************************************
 
-   if (!hWnd)
-   {
+   if (hWnd == 0)
       return FALSE;
-   }
 
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
 
    return TRUE;
 }
+//****************************************************************
+void Draw_Frame(HDC hdc)
+{
+
+}
+//****************************************************************
 
 //
 //  FUNCTION: WndProc(HWND, UINT, WPARAM, LPARAM)
@@ -142,14 +156,20 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
         }
         break;
+
+
     case WM_PAINT:
         {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: Add any drawing code that uses hdc here...
+            Draw_Frame(hdc);
+
             EndPaint(hWnd, &ps);
         }
         break;
+
+
     case WM_DESTROY:
         PostQuitMessage(0);
         break;
