@@ -364,3 +364,6 @@ FodyWeavers.xsd
 /Popcorn/Popcorn.rc
 /Popcorn/small.ico
 /Popcorn/Popcorn.ico
+/Popcorn/framework.h
+/Popcorn/Resource.h
+/Popcorn/targetver.h
