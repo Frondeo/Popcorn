@@ -1,5 +1,4 @@
 // Popcorn.cpp : Defines the entry point for the application.
-//
 
 #include "framework.h"
 #include "Main.h"
@@ -11,6 +10,14 @@ HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
 WCHAR szWindowClass[MAX_LOADSTRING];            // the main window class name
 
+const int Gl_scale = 3;
+const int Brick_Width = 15;
+const int Brick_Height = 7;
+const int Cell_Width = 16;
+const int Cell_Height = 8;
+const int X_Offset = 8;
+const int Y_Offset = 6;
+
 // Forward declarations of functions included in this code module:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
@@ -18,9 +25,9 @@ LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
-                     _In_opt_ HINSTANCE hPrevInstance,
-                     _In_ LPWSTR    lpCmdLine,
-                     _In_ int       nCmdShow)
+                      _In_opt_ HINSTANCE hPrevInstance,
+                      _In_ LPWSTR    lpCmdLine,
+                      _In_ int       nCmdShow)
 {
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
@@ -56,12 +63,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 }
 
 
-
-//
 //  FUNCTION: MyRegisterClass()
 //
 //  PURPOSE: Registers the window class.
-//
+
 ATOM MyRegisterClass(HINSTANCE hInstance)
 {
     WNDCLASSEXW wcex;
@@ -83,7 +88,6 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     return RegisterClassExW(&wcex);
 }
 
-//
 //   FUNCTION: InitInstance(HINSTANCE, int)
 //
 //   PURPOSE: Saves instance handle and creates main window
@@ -92,7 +96,8 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 //
 //        In this function, we save the instance handle in a global variable and
 //        create and display the main program window.
-//
+
+
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    hInst = hInstance; // Store instance handle in our global variable
@@ -110,7 +115,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
       0, 0, window_rect.right - window_rect.left, window_rect.bottom - window_rect.top, nullptr, nullptr, hInstance, nullptr);
  
-   //--------------------------------------------------------------------------
+   //-------------------------------------------------------------------------
 
    if (hWnd == 0)
       return FALSE;
@@ -121,13 +126,37 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    return TRUE;
 }
 //--------------------------------------------------------------------------
+void Draw_Brick(HDC hdc, int x, int y, bool is_blue)
+{
+   HPEN  pen;
+   HBRUSH brush;
+
+   if (is_blue)
+   {
+      pen = CreatePen(PS_SOLID, 0, RGB(85, 255, 255));
+      brush = CreateSolidBrush(RGB(85, 255, 255));
+   }
+   else
+   {
+      pen = CreatePen(PS_SOLID, 0, RGB(255, 85, 255));
+      brush = CreateSolidBrush(RGB(255, 85, 255));
+   }
+
+   SelectObject(hdc, pen);
+   SelectObject(hdc, brush);
+   Rectangle(hdc, x * Gl_scale, y * Gl_scale, (x + Brick_Width) * Gl_scale, (y + Brick_Height) * Gl_scale);
+}
+
+//--------------------------------------------------------------------------
 void Draw_Frame(HDC hdc)
 {
-
+   int i, j;
+   for (i = 0; i < 14; i++)
+      for (j = 0; j < 12; j++)
+         Draw_Brick(hdc, X_Offset + j * Cell_Width, Y_Offset + i * Cell_Height, true);
 }
 //--------------------------------------------------------------------------
 
-//
 //  FUNCTION: WndProc(HWND, UINT, WPARAM, LPARAM)
 //
 //  PURPOSE: Processes messages for the main window.
@@ -135,8 +164,8 @@ void Draw_Frame(HDC hdc)
 //  WM_COMMAND  - process the application menu
 //  WM_PAINT    - Paint the main window
 //  WM_DESTROY  - post a quit message and return
-//
-//
+
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
