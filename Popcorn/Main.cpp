@@ -94,7 +94,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    hInst = hInstance; // Store instance handle in our global variable
  
    //--------------------------------------------------------------------------
-   Init();
+   Init(); //инициализирует карандаш и кисть
 
    RECT window_rect;
    window_rect.left = 0;
