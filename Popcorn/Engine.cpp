@@ -1,4 +1,6 @@
 #include "Engine.h"
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 enum EBrick_Type
 {
@@ -54,7 +56,7 @@ void Init() //инициализирует карандаш и кисть
  
    Arc_Pen = CreatePen(PS_SOLID, 0, RGB(255, 255, 255));
    Create_Pen_Brush(255, 85, 85, Brick_Red_Pen, Brick_Red_Brush);
-   Create_Pen_Brush(255, 85, 255, Brick_Blue_Pen, Brick_Blue_Brush);
+   Create_Pen_Brush(41, 100, 246, Brick_Blue_Pen, Brick_Blue_Brush);
    Create_Pen_Brush(151, 0, 0, Circle_Pen, Circle_Brush);
    Create_Pen_Brush(0, 128, 192, Platform_Pen, Platform_Brush);
 }  
@@ -85,9 +87,64 @@ void Draw_Brick(HDC hdc, int x, int y, EBrick_Type brick_type)
 
    SelectObject(hdc, pen);
    SelectObject(hdc, brush);
+
    RoundRect(hdc, x * Gl_scale, y * Gl_scale, (x + Brick_Width) * Gl_scale, (y + Brick_Height) * Gl_scale, 2 * Gl_scale, 2 * Gl_scale);
 }
 //--------------------------------------------------------------------------
+void Draw_Brick_Letter(HDC hdc, int x, int y, int rotation_step)
+{
+   //выводим падающую букву
+   double offset;
+   double rotation_angle = 2.0 * M_PI / 16.0 * (double)rotation_step; // Преобразование шага в угол
+   int brick_half_heigth = Brick_Height * Gl_scale / 2;
+   int back_part_offset;
+
+   XFORM xform, old_xform;
+
+   if (rotation_step == 4 || rotation_step == 12)
+   {
+      //Выводим фон 
+      SelectObject(hdc, Brick_Red_Pen);
+      SelectObject(hdc, Brick_Red_Brush);
+
+      Rectangle(hdc, x, y + brick_half_heigth - Gl_scale, x + Brick_Width * Gl_scale, y + brick_half_heigth);
+
+      SelectObject(hdc, Brick_Blue_Pen);
+      SelectObject(hdc, Brick_Blue_Brush);
+
+      Rectangle(hdc, x, y + brick_half_heigth, x + Brick_Width * Gl_scale, y + brick_half_heigth + Gl_scale - 1);
+   }
+   else
+   {
+      //Выводим фон 
+      SetGraphicsMode(hdc, GM_ADVANCED);
+      //матрица переворота
+      xform.eM11 = 1.0f;
+      xform.eM12 = 0.0f;
+      xform.eM21 = 0.0f;
+      xform.eM22 = (float)cos(rotation_angle);
+      xform.eDx = (float)x;
+      xform.eDy = (float)y + (float)brick_half_heigth;
+      GetWorldTransform(hdc, &old_xform);
+      SetWorldTransform(hdc, &xform);
+
+      SelectObject(hdc, Brick_Red_Pen);
+      SelectObject(hdc, Brick_Red_Brush);
+
+      offset = 3.0f * (1.0f - fabs(xform.eM22)) * (double)Gl_scale;
+      back_part_offset = (int)round(offset);
+      Rectangle(hdc, 0, -brick_half_heigth - back_part_offset, Brick_Width * Gl_scale, brick_half_heigth - back_part_offset);
+
+      SelectObject(hdc, Brick_Blue_Pen);
+      SelectObject(hdc, Brick_Blue_Brush);
+
+      Rectangle(hdc, 0, -brick_half_heigth, Brick_Width * Gl_scale, brick_half_heigth);
+
+      SetWorldTransform(hdc, &old_xform);
+   }
+}
+//--------------------------------------------------------------------------
+
 void Draw_Level(HDC hdc)
 {
    int i, j;
@@ -120,7 +177,11 @@ RoundRect(hdc, (x + 4) * Gl_scale, (y + 1) * Gl_scale, (x + 4 + Inner_Width - 1)
 
 void Draw_Frame(HDC hdc)
 {
-   Draw_Level(hdc);
-   Draw_Platform(hdc, 50, 100);
-  
+   //Draw_Level(hdc);
+   //Draw_Platform(hdc, 50, 100);
+
+   int i;
+   for (i = 0; i < 16; i++)
+      Draw_Brick_Letter(hdc, 20 + i * Cell_Width * Gl_scale, 100, i);
+   
 }
