@@ -1,4 +1,4 @@
-#include "Engine.h"
+п»ї#include "Engine.h"
 #define _USE_MATH_DEFINES
 #include <math.h>
 
@@ -16,8 +16,9 @@ enum ELetter_Type
    ELT_O
 };
 
-HPEN  Arc_Pen, Letter_Pen, Brick_Red_Pen, Brick_Blue_Pen, Circle_Pen, Platform_Pen;
-HBRUSH Brick_Red_Brush, Brick_Blue_Brush, Circle_Brush, Platform_Brush;
+HWND Hwnd;
+HPEN Arc_Pen, Letter_Pen, BG_Pen, Brick_Red_Pen, Brick_Blue_Pen, Circle_Pen, Platform_Pen;
+HBRUSH Brick_Red_Brush, Brick_Blue_Brush, BG_Brush, Circle_Brush, Platform_Brush;
 
 const int Gl_scale = 3;
 const int Brick_Width = 15;
@@ -26,12 +27,23 @@ const int Cell_Width = 16;
 const int Cell_Height = 8;
 const int X_Offset = 8;
 const int Y_Offset = 6;
+const int Level_Width = 14;
+const int Level_Height = 12;
 const int Circle_Size = 7;
+const int Platform_Y_Pos = 185;
+const int Platform_Height = 7;
 
 int Inner_Width = 21;
+int Platform_X_Pos = 0;
+int Platform_X_Step = Gl_scale * 2;
+int Platform_Width = 28;
+
+RECT Platform_Rect, Prev_Platform_Rect;
+RECT Level_Rect;
 
 
-char Level_one[14][12] =
+char Level_one[Level_Width][Level_Height]=
+
 { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -55,16 +67,39 @@ void Create_Pen_Brush(unsigned char r, unsigned char g, unsigned char b, HPEN &p
 
 }
 
-
-void Init() //инициализирует карандаш и кисть
+void  Redraw_Platform()
 {
- 
+   Prev_Platform_Rect = Platform_Rect;
+
+   Platform_Rect.left = (X_Offset + Platform_X_Pos) * Gl_scale;
+   Platform_Rect.top = Platform_Y_Pos * Gl_scale;
+   Platform_Rect.right = Platform_Rect.left + Platform_Width * Gl_scale;
+   Platform_Rect.bottom = Platform_Rect.top + Platform_Height * Gl_scale;
+
+   InvalidateRect(Hwnd, &Prev_Platform_Rect, FALSE);
+   InvalidateRect(Hwnd, &Platform_Rect, FALSE);
+}
+
+void Init_Engine(HWND hwnd) //РёРЅРёС†РёР°Р»РёР·РёСЂСѓРµС‚ РєР°СЂР°РЅРґР°С€ Рё РєРёСЃС‚СЊ
+{
+   Hwnd = hwnd;
+   
    Arc_Pen = CreatePen(PS_SOLID, 0, RGB(255, 255, 255));
    Letter_Pen = CreatePen(PS_SOLID, Gl_scale, RGB(255, 255, 255));
+
+   Create_Pen_Brush(15, 63, 31, BG_Pen, BG_Brush);
+
    Create_Pen_Brush(255, 85, 85, Brick_Red_Pen, Brick_Red_Brush);
    Create_Pen_Brush(41, 100, 246, Brick_Blue_Pen, Brick_Blue_Brush);
    Create_Pen_Brush(151, 0, 0, Circle_Pen, Circle_Brush);
    Create_Pen_Brush(0, 128, 192, Platform_Pen, Platform_Brush);
+
+   Level_Rect.left = X_Offset * Gl_scale;
+   Level_Rect.top = Y_Offset * Gl_scale;
+   Level_Rect.right = Level_Rect.left + Cell_Width * Level_Width * Gl_scale;
+   Level_Rect.bottom = Level_Rect.top + Cell_Height * Level_Height * Gl_scale;
+
+   Redraw_Platform();
 }  
 //--------------------------------------------------------------------------
 void Draw_Brick(HDC hdc, int x, int y, EBrick_Type brick_type)
@@ -121,11 +156,11 @@ void Set_Brick_Letter_Colors(bool is_switch_color, HPEN &front_pen, HBRUSH &fron
 
 void Draw_Brick_Letter(HDC hdc, int x, int y, EBrick_Type brick_type, ELetter_Type letter_type, int rotation_step)
 {
-   //выводим падающую букву
+   //РІС‹РІРѕРґРёРј РїР°РґР°СЋС‰СѓСЋ Р±СѓРєРІСѓ
 
    bool switch_color;
    double offset;
-   double rotation_angle; // Преобразование шага в угол
+   double rotation_angle; // РџСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ С€Р°РіР° РІ СѓРіРѕР»
    int brick_half_heigth = Brick_Height * Gl_scale / 2;
    int back_part_offset;
    HPEN front_pen, back_pen;
@@ -135,7 +170,7 @@ void Draw_Brick_Letter(HDC hdc, int x, int y, EBrick_Type brick_type, ELetter_Ty
    if (!(brick_type == ET_Blue || brick_type == ET_Red))
       return;
 
-   //Корректировка шага вращения кирпича
+   //РљРѕСЂСЂРµРєС‚РёСЂРѕРІРєР° С€Р°РіР° РІСЂР°С‰РµРЅРёСЏ РєРёСЂРїРёС‡Р°
    rotation_step = rotation_step % 16;
 
    if (rotation_step < 8)
@@ -164,7 +199,7 @@ void Draw_Brick_Letter(HDC hdc, int x, int y, EBrick_Type brick_type, ELetter_Ty
 
    if (rotation_step == 4 || rotation_step == 12)
    {
-      //Выводим фон 
+      //Р’С‹РІРѕРґРёРј С„РѕРЅ 
       SelectObject(hdc, back_pen);
       SelectObject(hdc, back_brush);
 
@@ -177,9 +212,9 @@ void Draw_Brick_Letter(HDC hdc, int x, int y, EBrick_Type brick_type, ELetter_Ty
    }
    else
    {
-      //Выводим фон 
+      //Р’С‹РІРѕРґРёРј С„РѕРЅ 
       SetGraphicsMode(hdc, GM_ADVANCED);
-      //матрица переворота
+      //РјР°С‚СЂРёС†Р° РїРµСЂРµРІРѕСЂРѕС‚Р°
       xform.eM11 = 1.0f;
       xform.eM12 = 0.0f;
       xform.eM21 = 0.0f;
@@ -227,34 +262,68 @@ void Draw_Level(HDC hdc)
 void Draw_Platform(HDC hdc, int x, int y)
 { 
 
-SelectObject(hdc, Circle_Pen);
-SelectObject(hdc, Circle_Brush);
+   SelectObject(hdc, BG_Pen);
+   SelectObject(hdc, BG_Brush);
 
-Ellipse(hdc, x * Gl_scale, y * Gl_scale, (x + Circle_Size) * Gl_scale, (y + Circle_Size) * Gl_scale);
-Ellipse(hdc, (x + Inner_Width) * Gl_scale, y * Gl_scale, (x + Circle_Size + Inner_Width) * Gl_scale, (y + Circle_Size) * Gl_scale);
+   Rectangle(hdc, Prev_Platform_Rect.left, Prev_Platform_Rect.top, Prev_Platform_Rect.right, Prev_Platform_Rect.bottom);
+
+   SelectObject(hdc, Circle_Pen);
+   SelectObject(hdc, Circle_Brush);
+
+   Ellipse(hdc, x * Gl_scale, y * Gl_scale, (x + Circle_Size) * Gl_scale, (y + Circle_Size) * Gl_scale);
+   Ellipse(hdc, (x + Inner_Width) * Gl_scale, y * Gl_scale, (x + Circle_Size + Inner_Width) * Gl_scale, (y + Circle_Size) * Gl_scale);
 
 
-SelectObject(hdc, Arc_Pen);
+   SelectObject(hdc, Arc_Pen);
 
-Arc(hdc, (x + 1) * Gl_scale, (y + 1) * Gl_scale, (x + Circle_Size - 1) * Gl_scale, (y + Circle_Size - 1) * Gl_scale,
+   Arc(hdc, (x + 1) * Gl_scale, (y + 1) * Gl_scale, (x + Circle_Size - 1) * Gl_scale, (y + Circle_Size - 1) * Gl_scale,
          (x + 1 + 1)* Gl_scale, (y + 1) * Gl_scale, (x + 1)* Gl_scale, (y + 1 + 2) * Gl_scale);
 
-SelectObject(hdc, Platform_Pen);
-SelectObject(hdc, Platform_Brush);
+   SelectObject(hdc, Platform_Pen);
+   SelectObject(hdc, Platform_Brush);
 
-RoundRect(hdc, (x + 4) * Gl_scale, (y + 1) * Gl_scale, (x + 4 + Inner_Width - 1) * Gl_scale, (y + 1 + 5) * Gl_scale, 3 * Gl_scale, 3 * Gl_scale);
+   RoundRect(hdc, (x + 4) * Gl_scale, (y + 1) * Gl_scale, (x + 4 + Inner_Width - 1) * Gl_scale, (y + 1 + 5) * Gl_scale, 3 * Gl_scale, 3 * Gl_scale);
 }
 
 
-void Draw_Frame(HDC hdc)
+void Draw_Frame(HDC hdc, RECT &paint_area)
 {
-   //Draw_Level(hdc);
-   //Draw_Platform(hdc, 50, 100);
+   
+   RECT intersection_rect;
+  
+   if (IntersectRect(&intersection_rect, &paint_area, &Level_Rect))
+      Draw_Level(hdc);
 
-   int i;
+   if (IntersectRect(&intersection_rect, &paint_area, &Platform_Rect))
+      Draw_Platform(hdc, X_Offset + Platform_X_Pos, Platform_Y_Pos);
+
+   /*int i;
    for (i = 0; i < 16; i++)
    {
       Draw_Brick_Letter(hdc, 20 + i * Cell_Width * Gl_scale, 100, ET_Blue, ELT_O, i);
       Draw_Brick_Letter(hdc, 20 + i * Cell_Width * Gl_scale, 130, ET_Red, ELT_O, i);
+   }*/
+}
+
+
+
+int On_Key_Down(EKey_Type key_type)
+{
+   switch (key_type)
+   {
+   case EKT_Left:
+      Platform_X_Pos -= Platform_X_Step;
+      Redraw_Platform();
+      break;
+
+   case EKT_Right:
+      Platform_X_Pos += Platform_X_Step;
+      Redraw_Platform();
+      break;
+
+   case EKT_Space:
+      break;
    }
+   
+   return 0;
 }

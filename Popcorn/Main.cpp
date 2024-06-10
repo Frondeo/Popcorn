@@ -1,4 +1,4 @@
-// Popcorn.cpp : Defines the entry point for the application.
+п»ї// Popcorn.cpp : Defines the entry point for the application.
 
 #include "framework.h"
 #include "Main.h"
@@ -54,9 +54,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     return (int) msg.wParam;
 }
 
-//  FUNCTION: MyRegisterClass()
-//
-//  PURPOSE: Registers the window class.
 
 ATOM MyRegisterClass(HINSTANCE hInstance)
 {
@@ -79,22 +76,13 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     return RegisterClassExW(&wcex);
 }
 
-//   FUNCTION: InitInstance(HINSTANCE, int)
-//
-//   PURPOSE: Saves instance handle and creates main window
-//
-//   COMMENTS:
-//
-//        In this function, we save the instance handle in a global variable and
-//        create and display the main program window.
-// 
 
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    hInst = hInstance; // Store instance handle in our global variable
  
    //--------------------------------------------------------------------------
-   Init(); //инициализирует карандаш и кисть
+   //РёРЅРёС†РёР°Р»РёР·РёСЂСѓРµС‚ РєР°СЂР°РЅРґР°С€ Рё РєРёСЃС‚СЊ
 
    RECT window_rect;
    window_rect.left = 0;
@@ -112,6 +100,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    if (hWnd == 0)
       return FALSE;
 
+   Init_Engine(hWnd);
+
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
 
@@ -120,13 +110,6 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
 //--------------------------------------------------------------------------
 
-//  FUNCTION: WndProc(HWND, UINT, WPARAM, LPARAM)
-//
-//  PURPOSE: Processes messages for the main window.
-//
-//  WM_COMMAND  - process the application menu
-//  WM_PAINT    - Paint the main window
-//  WM_DESTROY  - post a quit message and return
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -157,8 +140,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: Add any drawing code that uses hdc here...
             
-            Draw_Frame(hdc);
-
+            Draw_Frame(hdc, ps.rcPaint);
             EndPaint(hWnd, &ps);
         }
         break;
@@ -167,6 +149,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_DESTROY:
         PostQuitMessage(0);
         break;
+        
+    case WM_KEYDOWN:
+       switch (wParam)
+       {
+       case VK_LEFT:
+          return On_Key_Down(EKT_Left);
+
+       case VK_RIGHT:
+          return On_Key_Down(EKT_Right);
+
+       case VK_SPACE:
+          return On_Key_Down(EKT_Space);
+       }
+       break;
+
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
