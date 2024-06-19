@@ -19,6 +19,9 @@
     <Filter Include="Engine">
       <UniqueIdentifier>{640d4198-add7-40b2-bfde-80e6c15ee145}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Border">
+      <UniqueIdentifier>{9cdc440f-c2fa-45d0-be35-d1e5d7dd3d6b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -35,6 +38,9 @@
     </ClInclude>
     <ClInclude Include="Engine.h">
       <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Border.h">
+      <Filter>Border</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -59,6 +65,9 @@
     </ClCompile>
     <ClCompile Include="Help.cpp">
       <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Border.cpp">
+      <Filter>Border</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

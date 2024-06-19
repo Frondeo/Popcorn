@@ -4,6 +4,9 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
+#include "Border.h"
+
+
 enum EBrick_Type
 {
    ET_None,
@@ -61,6 +64,7 @@ private:
 class ALevel
 {
 public:
+   ALevel();
    void Init();
    void Check_Level_Brick_Hit(int& next_y_pos, double& ball_direction);
 
@@ -103,31 +107,15 @@ private:
    int Inner_Width;
  
    RECT Platform_Rect, Prev_Platform_Rect;
+
    HPEN Arc_Pen, Circle_Pen, Platform_Pen;
    HBRUSH Circle_Brush, Platform_Brush;
 
    static const int Height = 7;
    static const int Circle_Size = 7;
 };
-
 //--------------------------------------------------------------------------
-class AsBorder
-{
-public:
 
-   void Init();
-   void Draw(HDC hdc, RECT& paint_area, AsEngine* engine);
-
-   static const int Border_X_Offset = 6;
-   static const int Border_Y_Offset = 4;
-
-private:
-   
-   void Draw_Element(HDC hdc, int x, int y, bool top_border, AsEngine* engine);
-
-   HPEN  Border_Blue_Pen, Border_White_Pen;
-   HBRUSH  Border_Blue_Brush, Border_White_Brush;
-};
 
 //--------------------------------------------------------------------------
 class AsEngine
@@ -140,13 +128,10 @@ public:
    int On_Key_Down(EKey_Type key_type);
    int On_Timer();
 
-   static void Create_Pen_Brush(unsigned char r, unsigned char g, unsigned char b, HPEN& pen, HBRUSH& brush);
-
    HWND Hwnd;
    HBRUSH BG_Brush;
    HPEN BG_Pen;
 
-   static const int Gl_scale = 3;
    static const int Max_X_Pos = ALevel::X_Offset + ALevel::Cell_Width * ALevel::Level_Width;
    static const int Max_Y_Pos = 199 - ABall::Ball_Size;
 
