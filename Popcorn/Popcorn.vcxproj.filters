@@ -22,6 +22,18 @@
     <Filter Include="Border">
       <UniqueIdentifier>{9cdc440f-c2fa-45d0-be35-d1e5d7dd3d6b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Level">
+      <UniqueIdentifier>{4658c005-763d-4cf4-92c7-6d2af2fbf6a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Config">
+      <UniqueIdentifier>{94ab5e61-c281-4b85-99c5-e856f9cdde09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Ball">
+      <UniqueIdentifier>{a72ca33d-86d7-48fe-a9bd-e634ddb0c724}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Platform">
+      <UniqueIdentifier>{a9224efb-ad2d-4629-8e61-3685e027d20e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -41,6 +53,18 @@
     </ClInclude>
     <ClInclude Include="Border.h">
       <Filter>Border</Filter>
+    </ClInclude>
+    <ClInclude Include="Level.h">
+      <Filter>Level</Filter>
+    </ClInclude>
+    <ClInclude Include="Config.h">
+      <Filter>Config</Filter>
+    </ClInclude>
+    <ClInclude Include="Ball.h">
+      <Filter>Ball</Filter>
+    </ClInclude>
+    <ClInclude Include="Platform.h">
+      <Filter>Platform</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -68,6 +92,18 @@
     </ClCompile>
     <ClCompile Include="Border.cpp">
       <Filter>Border</Filter>
+    </ClCompile>
+    <ClCompile Include="Level.cpp">
+      <Filter>Level</Filter>
+    </ClCompile>
+    <ClCompile Include="Config.cpp">
+      <Filter>Config</Filter>
+    </ClCompile>
+    <ClCompile Include="Ball.cpp">
+      <Filter>Ball</Filter>
+    </ClCompile>
+    <ClCompile Include="Platform.cpp">
+      <Filter>Platform</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
