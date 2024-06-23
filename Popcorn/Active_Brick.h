@@ -15,5 +15,4 @@ public:
    RECT Brick_Rect;
    static const int Max_Fade_Step = 80;
 
- 
 };
