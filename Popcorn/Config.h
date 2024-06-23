@@ -23,7 +23,10 @@ public:
    static const int Max_X_Pos = X_Offset + Cell_Width * Level_Width;
    static const int Ball_Size = 4;
    static const int Max_Y_Pos = 199 - Ball_Size;
-   static const int Y_Pos = 185;
+   static const int Y_Pos = 185; //Platform
+   static const int FPS = 20;
+   static const int Brick_Width = 15;
+   static const int Brick_Height = 7;
 };
 //--------------------------------------------------------------------------
 

@@ -11,7 +11,6 @@ public:
    void Init();
    void Draw(HDC hdc, RECT& paint_area, HPEN bg_pen, HBRUSH bg_brush);
 
-
 private:
 
    void Draw_Element(HDC hdc, int x, int y, bool top_border, HPEN bg_pen, HBRUSH bg_brush);
