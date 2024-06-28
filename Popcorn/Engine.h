@@ -31,8 +31,7 @@ public:
 private:
 
    HWND Hwnd;
-   HBRUSH BG_Brush;
-   HPEN BG_Pen;
+
 
    ABall Ball;
    ALevel Level;

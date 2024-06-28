@@ -3,12 +3,7 @@
 #include "Config.h"
 #include "Active_Brick.h"
 
-enum EBrick_Type
-{
-   ET_None,
-   ET_Red,
-   ET_Blue
-};
+
 
 enum ELetter_Type
 {

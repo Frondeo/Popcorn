@@ -18,7 +18,7 @@ void AsBorder::Init()
 }
 
 //-------------------------------------------------------------------------
-void AsBorder::Draw_Element(HDC hdc, int x, int y, bool top_border, HPEN bg_pen, HBRUSH bg_brush)
+void AsBorder::Draw_Element(HDC hdc, int x, int y, bool top_border)
 {
    //Border Blue
    SelectObject(hdc, Border_Blue_Pen);
@@ -39,8 +39,8 @@ void AsBorder::Draw_Element(HDC hdc, int x, int y, bool top_border, HPEN bg_pen,
       Rectangle(hdc, x * AsConfig::Gl_scale, y * AsConfig::Gl_scale, (x + 1) * AsConfig::Gl_scale, (y + 4) * AsConfig::Gl_scale);
 
    //Black point
-   SelectObject(hdc, bg_pen);
-   SelectObject(hdc, bg_brush);
+   SelectObject(hdc, AsConfig::BG_Pen);
+   SelectObject(hdc, AsConfig::BG_Brush);
 
    if (top_border)
       Rectangle(hdc, (x + 2) * AsConfig::Gl_scale, (y + 1) * AsConfig::Gl_scale, (x + 3) * AsConfig::Gl_scale, (y + 2) * AsConfig::Gl_scale);
@@ -48,17 +48,17 @@ void AsBorder::Draw_Element(HDC hdc, int x, int y, bool top_border, HPEN bg_pen,
       Rectangle(hdc, (x + 2) * AsConfig::Gl_scale, (y + 1) * AsConfig::Gl_scale, (x + 3) * AsConfig::Gl_scale, (y + 2) * AsConfig::Gl_scale);
 }
 
-void AsBorder::Draw(HDC hdc, RECT& paint_area, HPEN bg_pen, HBRUSH bg_brush)
+void AsBorder::Draw(HDC hdc, RECT& paint_area)
 {
    int i;
 
    for (i = 0; i < 50; i++)
-      Draw_Element(hdc, 2, 1 + i * 4, false, bg_pen, bg_brush);
+      Draw_Element(hdc, 2, 1 + i * 4, false);
 
    for (i = 0; i < 50; i++)
-      Draw_Element(hdc, 201, 1 + i * 4, false, bg_pen, bg_brush);
+      Draw_Element(hdc, 201, 1 + i * 4, false);
 
    for (i = 0; i < 50; i++)
-      Draw_Element(hdc, 3 + i * 4, 0, true, bg_pen, bg_brush);
+      Draw_Element(hdc, 3 + i * 4, 0, true);
 }
 //-------------------------------------------------------------------------

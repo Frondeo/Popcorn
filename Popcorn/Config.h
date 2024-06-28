@@ -6,10 +6,26 @@
 #include <math.h>
 
 //--------------------------------------------------------------------------
+
+class AColor
+{
+public:
+   AColor(unsigned char r, unsigned char g, unsigned char b);
+
+   unsigned char R, G, B;
+};
+
+//--------------------------------------------------------------------------
 class AsConfig
 {
 public:
+   static void Setup_Color();
+   static void Create_Pen_Brush(const AColor& color, HPEN& pen, HBRUSH& brush);
    static void Create_Pen_Brush(unsigned char r, unsigned char g, unsigned char b, HPEN& pen, HBRUSH& brush);
+
+   static const AColor BG_Color, Red_Brick_Color, Blue_Brick_Color;
+   static HBRUSH BG_Brush;
+   static HPEN BG_Pen;
 
    static const int Gl_scale = 3;
    static const int Border_X_Offset = 6;
@@ -27,6 +43,12 @@ public:
    static const int FPS = 20;
    static const int Brick_Width = 15;
    static const int Brick_Height = 7;
+   static const int Red_R = 41;
+   static const int Red_G = 246;
+   static const int Red_B = 246;
+   static const int Blue_R = 255;
+   static const int Blue_G = 85;
+   static const int Blue_B = 85;
 };
 //--------------------------------------------------------------------------
 

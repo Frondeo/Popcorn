@@ -22,7 +22,7 @@ char ALevel::Level_one[AsConfig::Level_Height][AsConfig::Level_Width] =
 //ALevel
 //-------------------------------------------------------------------------
 ALevel::ALevel()
-   : Brick_Red_Pen(0), Brick_Blue_Pen(0), Letter_Pen(0), Brick_Red_Brush(0), Brick_Blue_Brush(0), Level_Rect{}
+   : Active_Brick(EBT_Red), Brick_Red_Pen(0), Brick_Blue_Pen(0), Letter_Pen(0), Brick_Red_Brush(0), Brick_Blue_Brush(0), Level_Rect{}
 {
 }
 
@@ -31,8 +31,8 @@ void ALevel::Init()
 {
    Letter_Pen = CreatePen(PS_SOLID, AsConfig::Gl_scale, RGB(255, 255, 255));
 
-   AsConfig::Create_Pen_Brush(255, 85, 85, Brick_Red_Pen, Brick_Red_Brush);
-   AsConfig::Create_Pen_Brush(41, 100, 246, Brick_Blue_Pen, Brick_Blue_Brush);
+   AsConfig::Create_Pen_Brush(AsConfig::Red_Brick_Color, Brick_Red_Pen, Brick_Red_Brush);
+   AsConfig::Create_Pen_Brush(AsConfig::Blue_Brick_Color, Brick_Blue_Pen, Brick_Blue_Brush);
 
    Level_Rect.left = AsConfig::X_Offset * AsConfig::Gl_scale;
    Level_Rect.top = AsConfig::Y_Offset * AsConfig::Gl_scale;
@@ -87,15 +87,15 @@ void ALevel::Draw_Brick(HDC hdc, int x, int y, EBrick_Type brick_type)
 
    switch (brick_type)
    {
-   case ET_None:
+   case EBT_None:
       return;
 
-   case ET_Red:
+   case EBT_Red:
       pen = Brick_Red_Pen;
       brush = Brick_Red_Brush;
       break;
 
-   case ET_Blue:
+   case EBT_Blue:
       pen = Brick_Blue_Pen;
       brush = Brick_Blue_Brush;
       break;
@@ -145,7 +145,7 @@ void ALevel::Draw_Brick_Letter(HDC hdc, int x, int y, EBrick_Type brick_type, EL
    HBRUSH front_brush, back_brush;
    XFORM xform, old_xform;
 
-   if (!(brick_type == ET_Blue || brick_type == ET_Red))
+   if (!(brick_type == EBT_Blue || brick_type == EBT_Red))
       return;
 
    //Корректировка шага вращения кирпича
@@ -159,14 +159,14 @@ void ALevel::Draw_Brick_Letter(HDC hdc, int x, int y, EBrick_Type brick_type, EL
 
    if (rotation_step > 4 && rotation_step <= 12)
    {
-      if (brick_type == ET_Blue)
+      if (brick_type == EBT_Blue)
          switch_color = true;
       else
          switch_color = false;
    }
    else
    {
-      if (brick_type == ET_Red)
+      if (brick_type == EBT_Red)
          switch_color = true;
       else
          switch_color = false;
