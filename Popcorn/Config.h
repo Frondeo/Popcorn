@@ -40,7 +40,7 @@ public:
    static const int Ball_Size = 4;
    static const int Max_Y_Pos = 199 - Ball_Size;
    static const int Y_Pos = 185; //Platform
-   static const int FPS = 20;
+   static const int FPS = 50;
    static const int Brick_Width = 15;
    static const int Brick_Height = 7;
    static const int Red_R = 41;
