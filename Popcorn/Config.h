@@ -22,11 +22,13 @@ public:
    static void Setup_Color();
    static void Create_Pen_Brush(const AColor& color, HPEN& pen, HBRUSH& brush);
    static void Create_Pen_Brush(unsigned char r, unsigned char g, unsigned char b, HPEN& pen, HBRUSH& brush);
+   static int Rand(int range);
 
+   static int Current_Timer_Tick;
    static const AColor BG_Color, Red_Brick_Color, Blue_Brick_Color;
    static HBRUSH BG_Brush;
    static HPEN BG_Pen;
-
+   
    static const int Gl_scale = 3;
    static const int Border_X_Offset = 6;
    static const int Border_Y_Offset = 4;

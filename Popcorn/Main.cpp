@@ -102,9 +102,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
 	return TRUE;
 }
+
 //--------------------------------------------------------------------------
-
-
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	int wmId;

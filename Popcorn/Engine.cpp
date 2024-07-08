@@ -33,7 +33,7 @@ void AsEngine::Draw_Frame(HDC hdc, RECT &paint_area)
 
       Platform.Draw(hdc, paint_area);
 
-   /*int i;
+  /* int i;
    for (i = 0; i < 16; i++)
    {
       Draw_Brick_Letter(hdc, 20 + i * Cell_Width * Gl_scale, 100, ET_Blue, ELT_O, i);
@@ -75,9 +75,13 @@ int AsEngine::On_Key_Down(EKey_Type key_type)
 
 int AsEngine::On_Timer()
 {
+   ++AsConfig::Current_Timer_Tick;
+   
    Ball.Move(Hwnd, &Level, Platform.X_Pos, Platform.Width);
 
    Level.Active_Brick.Act(Hwnd);
+
+  // if (AsConfig::Current_Timer_Tick % 10 == 0)
    Platform.Act(Hwnd);
 
    return 0;
