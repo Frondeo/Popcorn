@@ -22,20 +22,27 @@ void AsPlatform::Init()
 //------------------------------------------------------------------------------------------------------------
 void AsPlatform::Act(HWND hwnd)
 {
+	if (Platform_State == EPS_Meltdown || Platform_State == EPS_Roll_In)
+		Redraw_Platform(hwnd);
+}
+
+//------------------------------------------------------------------------------------------------------------
+void AsPlatform::Set_State(EPlatform_State new_state)
+{
 	int i, len;
 
-	if (Platform_State != EPS_Meltdown)
-	{
-		Platform_State = EPS_Meltdown;
+	if (Platform_State == new_state)
+		return;
 
+	if (new_state == EPS_Meltdown)
+	{
 		len = sizeof(Meltdown_Platform_Y_Pos) / sizeof(Meltdown_Platform_Y_Pos[0]);
 
 		for (i = 0; i < len; i++)
 			Meltdown_Platform_Y_Pos[i] = Platform_Rect.bottom;
 	}
-
-	if (Platform_State == EPS_Meltdown)
-		Redraw_Platform(hwnd);
+	
+	Platform_State = new_state;
 }
 
 //------------------------------------------------------------------------------------------------------------
@@ -68,7 +75,22 @@ void AsPlatform::Draw(HDC hdc, RECT& paint_area)
 	case EPS_Meltdown:
 		Draw_Meltdown_State(hdc, paint_area);
 		break;
+
+	case EPS_Roll_In:
+		Draw_Roll_In_State(hdc, paint_area);
+		break;
 	}
+}
+
+//------------------------------------------------------------------------------------------------------------
+void AsPlatform::Draw_Circle_Hightlight(HDC hdc, int x, int y)
+{
+	// 2. Рисуем блик
+	SelectObject(hdc, Highlight_Pen);
+
+	Arc(hdc, x + AsConfig::Gl_scale, y + AsConfig::Gl_scale, x + (Circle_Size - 1) * AsConfig::Gl_scale, y + (Circle_Size - 1) * AsConfig::Gl_scale,
+		x + 2 * AsConfig::Gl_scale, y + AsConfig::Gl_scale, x + AsConfig::Gl_scale, y + 3 * AsConfig::Gl_scale);
+
 }
 
 //------------------------------------------------------------------------------------------------------------
@@ -94,11 +116,7 @@ void AsPlatform::Draw_Normal_State(HDC hdc, RECT& paint_area)
 	Ellipse(hdc, x * AsConfig::Gl_scale, y * AsConfig::Gl_scale, (x + Circle_Size) * AsConfig::Gl_scale, (y + Circle_Size) * AsConfig::Gl_scale);
 	Ellipse(hdc, (x + Inner_Width) * AsConfig::Gl_scale, y * AsConfig::Gl_scale, (x + Circle_Size + Inner_Width) * AsConfig::Gl_scale, (y + Circle_Size) * AsConfig::Gl_scale);
 
-	// 2. Рисуем блик
-	SelectObject(hdc, Highlight_Pen);
-
-	Arc(hdc, (x + 1) * AsConfig::Gl_scale, (y + 1) * AsConfig::Gl_scale, (x + Circle_Size - 1) * AsConfig::Gl_scale, (y + Circle_Size - 1) * AsConfig::Gl_scale,
-		(x + 1 + 1) * AsConfig::Gl_scale, (y + 1) * AsConfig::Gl_scale, (x + 1) * AsConfig::Gl_scale, (y + 1 + 2) * AsConfig::Gl_scale);
+	Draw_Circle_Hightlight(hdc, x, y);
 
 	// 3. Рисуем среднюю часть
 	SelectObject(hdc, Platform_Inner_Pen);
@@ -147,4 +165,23 @@ void AsPlatform::Draw_Meltdown_State(HDC hdc, RECT& paint_area)
 		Meltdown_Platform_Y_Pos[i] += y_offset;
 	}
 }
+//------------------------------------------------------------------------------------------------------------
+void AsPlatform::Draw_Roll_In_State(HDC hdc, RECT &paint_area)
+{
+	int x = X_Pos * AsConfig::Gl_scale;
+	int y = AsConfig::Y_Pos * AsConfig::Gl_scale;
+	int roller_size = Circle_Size * AsConfig::Gl_scale;
+
+	SelectObject(hdc, Platform_Circle_Pen);
+	SelectObject(hdc, Platform_Circle_Brush);
+
+	Ellipse(hdc, x, y, x + roller_size, y + roller_size);
+
+	SelectObject(hdc, AsConfig::BG_Pen);
+	SelectObject(hdc, AsConfig::BG_Brush);
+
+	Rectangle(hdc, x + roller_size / 2 - AsConfig::Gl_scale /2 , y, x + roller_size / 2 + AsConfig::Gl_scale / 2 + 1, y + roller_size);
+
+	Draw_Circle_Hightlight(hdc, x, y);
+} 
 //------------------------------------------------------------------------------------------------------------

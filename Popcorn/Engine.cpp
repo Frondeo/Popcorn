@@ -19,6 +19,7 @@ void AsEngine::Init_Engine(HWND hwnd) //инициализирует каран�
    Level.Init();
    Platform.Init();
    Border.Init();
+   Platform.Set_State(EPS_Roll_In);
 
    Platform.Redraw_Platform(Hwnd);
 
