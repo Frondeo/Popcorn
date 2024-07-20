@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------------------------------------
 AsPlatform::AsPlatform()
 	: X_Pos(AsConfig::Border_X_Offset), X_Step(AsConfig::Gl_scale * 2), Platform_State(EPS_Normal), Inner_Width(21),
-	Width(Normal_Width), Platform_Rect{}, Prev_Platform_Rect{}, Highlight_Pen(0), Platform_Circle_Pen(0),
+	Rolling_Step(0), Width(Normal_Width), Platform_Rect{}, Prev_Platform_Rect{}, Highlight_Pen(0), Platform_Circle_Pen(0),
 	Platform_Inner_Pen(0), Platform_Circle_Brush(0), Platform_Inner_Brush(0)
 {
 	X_Pos = (AsConfig::Max_X_Pos - Width) / 2;
@@ -171,16 +171,33 @@ void AsPlatform::Draw_Roll_In_State(HDC hdc, RECT &paint_area)
 	int x = X_Pos * AsConfig::Gl_scale;
 	int y = AsConfig::Y_Pos * AsConfig::Gl_scale;
 	int roller_size = Circle_Size * AsConfig::Gl_scale;
+	double alpha;
+	XFORM xform, old_xform;
 
 	SelectObject(hdc, Platform_Circle_Pen);
 	SelectObject(hdc, Platform_Circle_Brush);
 
 	Ellipse(hdc, x, y, x + roller_size, y + roller_size);
 
+	SetGraphicsMode(hdc, GM_ADVANCED);
+
+	alpha = 2.0 * M_PI / 32.0 * Rolling_Step;
+
+	xform.eM11 = (float)cos(alpha);
+	xform.eM12 = (float)sin(alpha);
+	xform.eM21 = (float)-sin(alpha);
+	xform.eM22 = (float)cos(alpha);
+	xform.eDx  = (float)(x + roller_size / 2);
+	xform.eDy  = (float)(y + roller_size / 2);
+	GetWorldTransform(hdc, &old_xform);
+	SetWorldTransform(hdc, &xform);
+
 	SelectObject(hdc, AsConfig::BG_Pen);
 	SelectObject(hdc, AsConfig::BG_Brush);
 
-	Rectangle(hdc, x + roller_size / 2 - AsConfig::Gl_scale /2 , y, x + roller_size / 2 + AsConfig::Gl_scale / 2 + 1, y + roller_size);
+	Rectangle(hdc, - AsConfig::Gl_scale /2 , roller_size / 2, AsConfig::Gl_scale / 2, roller_size / 2);
+	
+	SetWorldTransform(hdc, &xform);
 
 	Draw_Circle_Hightlight(hdc, x, y);
 } 

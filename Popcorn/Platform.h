@@ -36,6 +36,7 @@ private:
 
 	EPlatform_State Platform_State;
 	int Inner_Width;
+	int Rolling_Step;
 
 	static const int Normal_Width = 28;
 

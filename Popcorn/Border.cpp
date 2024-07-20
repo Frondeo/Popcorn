@@ -1,8 +1,6 @@
 ﻿#include "Border.h"
 
 
-
-
 //AsBorder
 //--------------------------------------------------------------------------
 AsBorder::AsBorder()
@@ -15,6 +13,20 @@ void AsBorder::Init()
 {
    AsConfig::Create_Pen_Brush(41, 100, 246, Border_Blue_Pen, Border_Blue_Brush);
    AsConfig::Create_Pen_Brush(255, 255, 255, Border_White_Pen, Border_White_Brush);
+}
+
+void AsBorder::Draw(HDC hdc, RECT& paint_area)
+{
+   int i;
+
+   for (i = 0; i < 50; i++)
+      Draw_Element(hdc, 2, 1 + i * 4, false);
+
+   for (i = 0; i < 50; i++)
+      Draw_Element(hdc, 201, 1 + i * 4, false);
+
+   for (i = 0; i < 50; i++)
+      Draw_Element(hdc, 3 + i * 4, 0, true);
 }
 
 //-------------------------------------------------------------------------
@@ -48,17 +60,5 @@ void AsBorder::Draw_Element(HDC hdc, int x, int y, bool top_border)
       Rectangle(hdc, (x + 2) * AsConfig::Gl_scale, (y + 1) * AsConfig::Gl_scale, (x + 3) * AsConfig::Gl_scale, (y + 2) * AsConfig::Gl_scale);
 }
 
-void AsBorder::Draw(HDC hdc, RECT& paint_area)
-{
-   int i;
 
-   for (i = 0; i < 50; i++)
-      Draw_Element(hdc, 2, 1 + i * 4, false);
-
-   for (i = 0; i < 50; i++)
-      Draw_Element(hdc, 201, 1 + i * 4, false);
-
-   for (i = 0; i < 50; i++)
-      Draw_Element(hdc, 3 + i * 4, 0, true);
-}
 //-------------------------------------------------------------------------
