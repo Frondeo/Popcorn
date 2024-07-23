@@ -1,64 +1,64 @@
 ﻿#include "Border.h"
 
-
-//AsBorder
-//--------------------------------------------------------------------------
+// AsBorder
+//------------------------------------------------------------------------------------------------------------
 AsBorder::AsBorder()
-   :Border_Blue_Pen(0), Border_White_Pen(0), Border_Blue_Brush(0), Border_White_Brush(0)
+: Border_Blue_Pen(0), Border_White_Pen(0), Border_Blue_Brush(0), Border_White_Brush(0)
 {
 }
-
-//--------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------
 void AsBorder::Init()
 {
-   AsConfig::Create_Pen_Brush(41, 100, 246, Border_Blue_Pen, Border_Blue_Brush);
-   AsConfig::Create_Pen_Brush(255, 255, 255, Border_White_Pen, Border_White_Brush);
+	AsConfig::Create_Pen_Brush(85, 255, 255, Border_Blue_Pen, Border_Blue_Brush);
+	AsConfig::Create_Pen_Brush(255, 255, 255, Border_White_Pen, Border_White_Brush);
 }
+//------------------------------------------------------------------------------------------------------------
+void AsBorder::Draw(HDC hdc, RECT &paint_area)
+{// Рисует рамку уровня
 
-void AsBorder::Draw(HDC hdc, RECT& paint_area)
-{
-   int i;
+	int i;
 
-   for (i = 0; i < 50; i++)
-      Draw_Element(hdc, 2, 1 + i * 4, false);
+	// 1. Линия слева
+	for (i = 0; i < 50; i++)
+		Draw_Element(hdc, 2, 1 + i * 4, false);
 
-   for (i = 0; i < 50; i++)
-      Draw_Element(hdc, 201, 1 + i * 4, false);
+	// 2. Линия справа
+	for (i = 0; i < 50; i++)
+		Draw_Element(hdc, 201, 1 + i * 4, false);
 
-   for (i = 0; i < 50; i++)
-      Draw_Element(hdc, 3 + i * 4, 0, true);
+	// 3. Линия сверху
+	for (i = 0; i < 50; i++)
+		Draw_Element(hdc, 3 + i * 4, 0, true);
 }
-
-//-------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------
 void AsBorder::Draw_Element(HDC hdc, int x, int y, bool top_border)
-{
-   //Border Blue
-   SelectObject(hdc, Border_Blue_Pen);
-   SelectObject(hdc, Border_Blue_Brush);
+{// Рисует элемент рамки уровня
 
-   if (top_border)
-      Rectangle(hdc, x * AsConfig::Gl_scale, (y + 1) * AsConfig::Gl_scale, (x + 4) * AsConfig::Gl_scale, (y + 4) * AsConfig::Gl_scale);
-   else
-      Rectangle(hdc, (x + 1) * AsConfig::Gl_scale, y * AsConfig::Gl_scale, (x + 4) * AsConfig::Gl_scale, (y + 4) * AsConfig::Gl_scale);
+ // Основная линия
+	SelectObject(hdc, Border_Blue_Pen);
+	SelectObject(hdc, Border_Blue_Brush);
 
-   //Border White
-   SelectObject(hdc, Border_White_Pen);
-   SelectObject(hdc, Border_White_Brush);
+	if (top_border)
+		Rectangle(hdc, x * AsConfig::Global_Scale, (y + 1) * AsConfig::Global_Scale, (x + 4) * AsConfig::Global_Scale, (y + 4) * AsConfig::Global_Scale);
+	else
+		Rectangle(hdc, (x + 1) * AsConfig::Global_Scale, y * AsConfig::Global_Scale, (x + 4) * AsConfig::Global_Scale, (y + 4) * AsConfig::Global_Scale);
 
-   if (top_border)
-      Rectangle(hdc, x * AsConfig::Gl_scale, y * AsConfig::Gl_scale, (x + 4) * AsConfig::Gl_scale, (y + 1) * AsConfig::Gl_scale);
-   else
-      Rectangle(hdc, x * AsConfig::Gl_scale, y * AsConfig::Gl_scale, (x + 1) * AsConfig::Gl_scale, (y + 4) * AsConfig::Gl_scale);
+	// Белая кайма
+	SelectObject(hdc, Border_White_Pen);
+	SelectObject(hdc, Border_White_Brush);
 
-   //Black point
-   SelectObject(hdc, AsConfig::BG_Pen);
-   SelectObject(hdc, AsConfig::BG_Brush);
+	if (top_border)
+		Rectangle(hdc, x * AsConfig::Global_Scale, y * AsConfig::Global_Scale, (x + 4) * AsConfig::Global_Scale, (y + 1) * AsConfig::Global_Scale);
+	else
+		Rectangle(hdc, x * AsConfig::Global_Scale, y * AsConfig::Global_Scale, (x + 1) * AsConfig::Global_Scale, (y + 4) * AsConfig::Global_Scale);
 
-   if (top_border)
-      Rectangle(hdc, (x + 2) * AsConfig::Gl_scale, (y + 1) * AsConfig::Gl_scale, (x + 3) * AsConfig::Gl_scale, (y + 2) * AsConfig::Gl_scale);
-   else
-      Rectangle(hdc, (x + 2) * AsConfig::Gl_scale, (y + 1) * AsConfig::Gl_scale, (x + 3) * AsConfig::Gl_scale, (y + 2) * AsConfig::Gl_scale);
+	// Перфорация
+	SelectObject(hdc, AsConfig::BG_Pen);
+	SelectObject(hdc, AsConfig::BG_Brush);
+
+	if (top_border)
+		Rectangle(hdc, (x + 2) * AsConfig::Global_Scale, (y + 2) * AsConfig::Global_Scale, (x + 3) * AsConfig::Global_Scale, (y + 3) * AsConfig::Global_Scale);
+	else
+		Rectangle(hdc, (x + 2) * AsConfig::Global_Scale, (y + 1) * AsConfig::Global_Scale, (x + 3) * AsConfig::Global_Scale, (y + 2) * AsConfig::Global_Scale);
 }
-
-
-//-------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------

@@ -1,89 +1,88 @@
 ﻿#include "Engine.h"
 
-
-//AsEngine
-//-------------------------------------------------------------------------
+// AsEngine
+//------------------------------------------------------------------------------------------------------------
 AsEngine::AsEngine()
-   : Hwnd(0)
 {
 }
+//------------------------------------------------------------------------------------------------------------
+void AsEngine::Init_Engine(HWND hwnd)
+{// Настройка игры при старте
 
-void AsEngine::Init_Engine(HWND hwnd) //инициализирует карандаш и кисть
-{
-   Hwnd = hwnd;
+	AsConfig::Hwnd = hwnd;
 
-  
-   AActive_Brick::Setup_Color();
+	AActive_Brick::Setup_Colors();
 
-   Ball.Init();
-   Level.Init();
-   Platform.Init();
-   Border.Init();
-   Platform.Set_State(EPS_Roll_In);
+	Ball.Init();
+	Level.Init();
+	Platform.Init();
+	Border.Init();
 
-   Platform.Redraw_Platform(Hwnd);
+	Platform.Set_State(EPS_Roll_In);
 
-   SetTimer(Hwnd, Timer_ID, 1000 / AsConfig::FPS, 0);
+	Platform.Redraw_Platform();
+
+	SetTimer(AsConfig::Hwnd, Timer_ID, 1000 / AsConfig::FPS, 0);
 }
-
+//------------------------------------------------------------------------------------------------------------
 void AsEngine::Draw_Frame(HDC hdc, RECT &paint_area)
-{
-   RECT intersection_rect;
+{// Отрисовка экрана игры
 
-      Level.Draw(Hwnd, hdc, paint_area);
+	Level.Draw(hdc, paint_area);
 
-      Platform.Draw(hdc, paint_area);
+	//int i;
 
-  /* int i;
-   for (i = 0; i < 16; i++)
-   {
-      Draw_Brick_Letter(hdc, 20 + i * Cell_Width * Gl_scale, 100, ET_Blue, ELT_O, i);
-      Draw_Brick_Letter(hdc, 20 + i * Cell_Width * Gl_scale, 130, ET_Red, ELT_O, i);
-   }*/
- 
-   Ball.Draw(hdc, paint_area);
-   Border.Draw(hdc, paint_area);
+	//for (i = 0; i < 16; i++)
+	//{
+	//	Draw_Brick_Letter(hdc, 20 + i * Cell_Width * Global_Scale, 100, EBT_Blue, ELT_O, i);
+	//	Draw_Brick_Letter(hdc, 20 + i * Cell_Width * Global_Scale, 130, EBT_Red, ELT_O, i);
+	//}
+
+	Ball.Draw(hdc, paint_area);
+	Border.Draw(hdc, paint_area);
+	Platform.Draw(hdc, paint_area);
 }
-
+//------------------------------------------------------------------------------------------------------------
 int AsEngine::On_Key_Down(EKey_Type key_type)
 {
-   switch (key_type)
-   {
-   case EKT_Left:
-      Platform.X_Pos -= Platform.X_Step;
+	switch (key_type)
+	{
+	case EKT_Left:
+		Platform.X_Pos -= Platform.X_Step;
 
-      if (Platform.X_Pos <= AsConfig::Border_X_Offset)
-         Platform.X_Pos = AsConfig::Border_X_Offset;
+		if (Platform.X_Pos <= AsConfig::Border_X_Offset)
+			Platform.X_Pos = AsConfig::Border_X_Offset;
 
-      Platform.Redraw_Platform(Hwnd);
-      break;
+		Platform.Redraw_Platform();
+		break;
 
-   case EKT_Right:
-      Platform.X_Pos += Platform.X_Step;
+	case EKT_Right:
+		Platform.X_Pos += Platform.X_Step;
 
-      if (Platform.X_Pos >= AsConfig::Max_X_Pos - Platform.Width + 1)
-         Platform.X_Pos = AsConfig::Max_X_Pos - Platform.Width;
+		if (Platform.X_Pos >= AsConfig::Max_X_Pos - Platform.Width + 1)
+			Platform.X_Pos = AsConfig::Max_X_Pos - Platform.Width + 1;
 
-      Platform.Redraw_Platform(Hwnd);
-      break;
+		Platform.Redraw_Platform();
+		break;
 
-   case EKT_Space:
-      break;
-   }
+	case EKT_Space:
+		break;
+	}
 
-   return 0;
+	return 0;
 }
-
+//------------------------------------------------------------------------------------------------------------
 int AsEngine::On_Timer()
 {
-   ++AsConfig::Current_Timer_Tick;
-   
-   Ball.Move(Hwnd, &Level, Platform.X_Pos, Platform.Width);
+	++AsConfig::Current_Timer_Tick;
 
-   Level.Active_Brick.Act(Hwnd);
+	Ball.Move(&Level, Platform.X_Pos, Platform.Width);
 
-  // if (AsConfig::Current_Timer_Tick % 10 == 0)
-   Platform.Act(Hwnd);
+	Level.Active_Brick.Act();
 
-   return 0;
+	//if (AsConfig::Current_Timer_Tick % 10 == 0)
+		Platform.Act();
+
+	return 0;
 }
+//------------------------------------------------------------------------------------------------------------
